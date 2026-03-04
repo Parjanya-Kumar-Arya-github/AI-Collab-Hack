@@ -5,6 +5,8 @@ import SmartMatch from './pages/SmartMatch';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Onboard from './pages/Onboard';
+import MyTeams from './pages/MyTeams';
+import Leaderboard from './pages/Leaderboard';
 import './App.css';
 import './index.css';
 
@@ -22,8 +24,8 @@ function App() {
         <Route path="profile" element={<Profile />} />
 
         {/* Fallback routes */}
-        <Route path="my-teams" element={<div className="p-8 text-indigo-900 font-bold">My Teams (Coming Soon)</div>} />
-        <Route path="leaderboard" element={<div className="p-8 text-indigo-900 font-bold">Leaderboard (Coming Soon)</div>} />
+        <Route path="my-teams" element={<MyTeams />} />
+        <Route path="leaderboard" element={<Leaderboard />} />
       </Route>
     </Routes>
   );
