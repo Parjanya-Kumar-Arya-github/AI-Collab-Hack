@@ -4,15 +4,18 @@ import Discover from './pages/Discover';
 import SmartMatch from './pages/SmartMatch';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
-import Onboard from './pages/Onboard';
+
+import ProfileBuilder from './pages/ProfileBuilder';
+import { AuthProvider } from './context/AuthContext';
 import './App.css';
 import './index.css';
 
 function App() {
   return (
+    <AuthProvider>
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/onboard" element={<Onboard />} />
+
       <Route path="/" element={<DashboardLayout />}>
         {/* Redirect root to Discover */}
         <Route index element={<Navigate to="/discover" replace />} />
@@ -25,7 +28,9 @@ function App() {
         <Route path="my-teams" element={<div className="p-8 text-indigo-900 font-bold">My Teams (Coming Soon)</div>} />
         <Route path="leaderboard" element={<div className="p-8 text-indigo-900 font-bold">Leaderboard (Coming Soon)</div>} />
       </Route>
+      <Route path="/profile/build" element={<ProfileBuilder />} />
     </Routes>
+    </AuthProvider>
   );
 }
 

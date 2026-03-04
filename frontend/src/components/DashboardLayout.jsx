@@ -1,8 +1,11 @@
 import React from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
-import { Compass, Users, Target, LayoutDashboard, User } from 'lucide-react';
+import { NavLink, Outlet, Link } from 'react-router-dom';
+import { Compass, Users, Target, LayoutDashboard, User, LogIn } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Sidebar = () => {
+    const { user, profile } = useAuth();
+
     const routes = [
         { name: 'Discover', path: '/discover', icon: Compass },
         { name: 'Smart Match', path: '/smart-match', icon: Users },
@@ -38,14 +41,31 @@ const Sidebar = () => {
                 ))}
             </nav>
 
-            <div className="pt-6 mt-4 border-t border-[#E5E7EB] flex items-center px-2 space-x-4 pb-2">
-                <div className="w-10 h-10 rounded-full bg-[#E8DDFF] text-[#7856FF] flex justify-center items-center text-sm font-bold border border-[#7856FF]/20">
-                    PR
-                </div>
-                <div className="flex-1 min-w-0">
-                    <div className="text-[14px] font-semibold text-[#201F24] truncate">Parjanya R.</div>
-                    <div className="text-[12px] font-medium text-[#5C5C5C]">Pro Member</div>
-                </div>
+            <div className="pt-6 mt-4 border-t border-[#E5E7EB] flex items-center px-2 pb-2">
+                {user ? (
+                    <div className="flex items-center space-x-4 w-full">
+                        {profile?.avatar_url ? (
+                            <img src={profile.avatar_url} alt="Avatar" className="w-10 h-10 rounded-full object-cover border border-[#7856FF]/20" />
+                        ) : (
+                            <div className="w-10 h-10 rounded-full bg-[#E8DDFF] text-[#7856FF] flex justify-center items-center text-sm font-bold border border-[#7856FF]/20 shrink-0 uppercase">
+                                {profile?.full_name ? profile.full_name.charAt(0) : user.email?.charAt(0) || 'U'}
+                            </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                            <div className="text-[14px] font-semibold text-[#201F24] truncate px-1">
+                                {profile?.full_name || profile?.username || user.email}
+                            </div>
+                            <div className="text-[12px] font-medium text-[#5C5C5C] px-1 truncate">
+                                {profile?.username ? `@${profile.username}` : 'Member'}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <Link to="/login" className="flex items-center justify-center w-full space-x-2 py-2.5 bg-[#7856FF] text-white rounded-xl font-semibold text-sm hover:bg-[#6042DD] transition-colors shadow-sm">
+                        <LogIn className="w-4 h-4" />
+                        <span>Log In / Sign Up</span>
+                    </Link>
+                )}
             </div>
         </div>
     );
