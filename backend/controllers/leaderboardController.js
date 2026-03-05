@@ -5,10 +5,9 @@ export const getLeaderboard = async (req, res) => {
   try {
     const { scope = 'global', city, page = 1, limit = 50 } = req.query;
     const offset = (page - 1) * limit;
-    const conditions = ['u.is_active = true', 'u.is_profile_complete = true'];
+    const conditions = ['u.is_active = true'];
     const params = [];
 
-    // City filter (for local leaderboard)
     if (scope === 'city' && city) {
       params.push(city);
       conditions.push(`u.city ILIKE $${params.length}`);
@@ -18,7 +17,7 @@ export const getLeaderboard = async (req, res) => {
     params.push(Number(limit), Number(offset));
 
     const result = await pool.query(
-      `SELECT 
+      `SELECT
         u.id, u.username, u.full_name, u.avatar_url, u.city, u.headline,
         r.elo_score, r.tier, r.total_competitions, r.wins, r.podium_finishes,
         r.rating_confidence,
@@ -57,21 +56,21 @@ export const getMyRank = async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT rank, elo_score, tier FROM (
-        SELECT 
+        SELECT
           u.id,
           r.elo_score,
           r.tier,
           ROW_NUMBER() OVER (ORDER BY r.elo_score DESC)::int AS rank
         FROM users u
         JOIN user_ratings r ON r.user_id = u.id
-        WHERE u.is_active = true AND u.is_profile_complete = true
+        WHERE u.is_active = true
       ) ranked
       WHERE id = $1`,
       [req.user.id]
     );
 
     if (!result.rows.length)
-      return res.json({ success: true, rank: null, message: 'Complete your profile to appear on the leaderboard.' });
+      return res.json({ success: true, rank: null });
 
     res.json({ success: true, ...result.rows[0] });
   } catch (err) {

@@ -7,11 +7,13 @@ import {
 
 const router = express.Router();
 
-router.get('/my',       auth, getMyTeams);
-router.get('/:id',      auth, getTeam);
-router.post('/',        auth, createTeam);
-router.post('/join',    auth, joinTeam);
-router.patch('/:id',    auth, updateTeam);
-router.delete('/:id/leave', auth, leaveTeam);
+// ⚠️ Static routes MUST come before dynamic /:id routes
+router.get('/my',           auth, getMyTeams);   // GET /api/teams/my
+router.post('/join',        auth, joinTeam);      // POST /api/teams/join
+router.post('/',            auth, createTeam);    // POST /api/teams
+
+router.get('/:id',          auth, getTeam);       // GET /api/teams/:id
+router.patch('/:id',        auth, updateTeam);    // PATCH /api/teams/:id
+router.delete('/:id/leave', auth, leaveTeam);     // DELETE /api/teams/:id/leave
 
 export default router;

@@ -1,6 +1,7 @@
 import express from 'express';
 import passport from '../config/passport.js';
-import { oauthSuccess, oauthFailure } from '../controllers/authController.js';
+import { oauthSuccess, oauthFailure, getMe } from '../controllers/authController.js';
+import authMiddleware from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -23,5 +24,8 @@ router.get('/github/callback',
 );
 
 router.get('/failure', oauthFailure);
+
+// ─── Get current user (used by AuthContext on load) ───────────────────────────
+router.get('/me', authMiddleware, getMe);
 
 export default router;

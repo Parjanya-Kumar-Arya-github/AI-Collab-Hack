@@ -5,6 +5,10 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import profileRoutes from './routes/profile.js';
 import competitionRoutes from './routes/competitions.js';
+import teamRoutes from './routes/teams.js';
+import leaderboardRoutes from './routes/leaderboard.js';
+import assessmentRoutes from './routes/assessmentRoutes.js';
+
 
 dotenv.config();
 
@@ -25,6 +29,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/competitions', competitionRoutes);
+app.use('/api/teams', teamRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/assessment', assessmentRoutes);
+
 
 // ─── HEALTH CHECK ─────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

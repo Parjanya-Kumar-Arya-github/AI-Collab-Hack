@@ -3,20 +3,33 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import pool from './db.js';
 
+// ─── Generate a unique temporary username ─────────────────────────────────────
+const generateTempUsername = async (base) => {
+  const cleaned = (base || 'user').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 12) || 'user';
+  let attempts = 0;
+  while (attempts < 10) {
+    const suffix = attempts === 0 ? '' : Math.floor(Math.random() * 9000 + 1000);
+    const username = `${cleaned}${suffix}`;
+    const exists = await pool.query('SELECT id FROM users WHERE username = $1', [username]);
+    if (exists.rows.length === 0) return username;
+    attempts++;
+  }
+  return `user${Date.now().toString().slice(-8)}`;
+};
+
 // ─── Helper: find or create user from OAuth ──────────────────────────────────
 const findOrCreateUser = async ({ provider, providerId, email, name, avatarUrl, githubUsername }) => {
-  // Try find by oauth
+  // Try find by oauth provider + id
   const existing = await pool.query(
     'SELECT * FROM users WHERE oauth_provider = $1 AND oauth_id = $2',
     [provider, providerId]
   );
   if (existing.rows.length > 0) return existing.rows[0];
 
-  // Try find by email (same person, different OAuth)
+  // Try find by email (same person, different OAuth provider)
   if (email) {
     const byEmail = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (byEmail.rows.length > 0) {
-      // Link this OAuth provider to existing account
       await pool.query(
         'UPDATE users SET oauth_provider = $1, oauth_id = $2 WHERE id = $3',
         [provider, providerId, byEmail.rows[0].id]
@@ -25,19 +38,22 @@ const findOrCreateUser = async ({ provider, providerId, email, name, avatarUrl, 
     }
   }
 
+  // Generate temp username from github handle, display name, or email prefix
+  const usernameBase = githubUsername || name || email?.split('@')[0] || 'user';
+  const tempUsername = await generateTempUsername(usernameBase);
+
   // Create new user
   const result = await pool.query(
-    `INSERT INTO users (oauth_provider, oauth_id, email, full_name, avatar_url, github_username)
-     VALUES ($1, $2, $3, $4, $5, $6)
+    `INSERT INTO users (oauth_provider, oauth_id, email, full_name, avatar_url, github_username, username)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      RETURNING *`,
-    [provider, providerId, email || null, name || null, avatarUrl || null, githubUsername || null]
+    [provider, providerId, email || null, name || null, avatarUrl || null, githubUsername || null, tempUsername]
   );
 
   const newUser = result.rows[0];
 
-  // Create empty ratings row
+  // Create empty ratings + preferences rows
   await pool.query('INSERT INTO user_ratings (user_id) VALUES ($1)', [newUser.id]);
-  // Create empty preferences row
   await pool.query('INSERT INTO user_preferences (user_id) VALUES ($1)', [newUser.id]);
 
   return newUser;
@@ -91,7 +107,7 @@ passport.use(new GitHubStrategy(
   }
 ));
 
-// Serialize/deserialize (minimal — we use JWT after OAuth)
+// Serialize/deserialize (only used briefly during OAuth handshake — we switch to JWT after)
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
   try {
