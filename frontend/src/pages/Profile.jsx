@@ -132,11 +132,11 @@ export default function Profile() {
                 Elo: {profile.elo_score?.toLocaleString()} ({profile.tier || 'Explorer'})
               </span>
             )}
-            {profile.rating_confidence && (
+            {/* {profile.rating_confidence && (
               <span className="text-xs text-gray-400 capitalize">
                 {profile.rating_confidence} confidence
               </span>
-            )}
+            )} */}
           </div>
 
           {profile.bio && (
