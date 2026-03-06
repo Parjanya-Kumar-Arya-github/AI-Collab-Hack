@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Search, SlidersHorizontal, X, Loader2 } from 'lucide-react';
 import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
-import DashboardLayout from '../components/DashboardLayout';
 
 const TYPES   = ['hackathon', 'case_comp', 'design_challenge', 'coding_contest', 'other'];
 const STATUSES = ['upcoming', 'ongoing', 'completed'];
@@ -24,7 +23,6 @@ export default function Discover() {
   const [competitions, setCompetitions] = useState([]);
   const [loading, setLoading]           = useState(true);
   const [error, setError]               = useState('');
-  const [registering, setRegistering]   = useState(null); // competition id being registered
   const [registered, setRegistered]     = useState(new Set()); // ids already registered
 
   // Filters
@@ -66,18 +64,6 @@ export default function Discover() {
       .catch(() => {});
   }, [token]);
 
-  const handleRegister = async (compId) => {
-    if (!token) { navigate('/login'); return; }
-    try {
-      setRegistering(compId);
-      await api.post(`/competitions/${compId}/register`);
-      setRegistered(prev => new Set([...prev, compId]));
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setRegistering(null);
-    }
-  };
 
   const clearFilters = () => {
     setSearch(''); setFilterType(''); setFilterStatus(''); setPage(1);
@@ -86,11 +72,8 @@ export default function Discover() {
   const hasFilters = search || filterType || filterStatus;
 
   return (
-    <>
-
     <div className="w-full h-full space-y-8 animate-in fade-in duration-500 font-sans">
       {/* Header */}
-      
       <div className="flex flex-col md:flex-row md:justify-between md:items-end mb-8 space-y-4 md:space-y-0">
         <div>
           <h1 className="text-[32px] font-[600] tracking-tight text-[#201F24] mb-2">Discover</h1>
@@ -174,7 +157,6 @@ export default function Discover() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {competitions.map((comp) => {
               const isReg = registered.has(comp.id);
-              const isRegistering = registering === comp.id;
               return (
                 <div
                   key={comp.id}
@@ -229,21 +211,10 @@ export default function Discover() {
                     </div>
 
                     <button
-                      onClick={() => handleRegister(comp.id)}
-                      disabled={isReg || isRegistering || comp.status === 'completed'}
-                      className={`w-full py-2.5 rounded-full font-[500] transition-colors duration-200 text-[14px] border
-                        ${isReg
-                          ? 'bg-green-50 border-green-200 text-green-600 cursor-default'
-                          : comp.status === 'completed'
-                          ? 'bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed'
-                          : 'bg-[#FAFAFA] hover:bg-[#7856FF] text-[#201F24] hover:text-white border-[#E5E7EB] hover:border-[#7856FF]'
-                        }`}
+                      onClick={() => navigate(`/competitions/${comp.id}`)}
+                      className="w-full py-2.5 rounded-full font-[500] transition-colors duration-200 text-[14px] border bg-[#FAFAFA] hover:bg-[#7856FF] text-[#201F24] hover:text-white border-[#E5E7EB] hover:border-[#7856FF]"
                     >
-                      {isRegistering
-                        ? <span className="flex items-center justify-center space-x-2"><Loader2 className="w-4 h-4 animate-spin" /><span>Registering...</span></span>
-                        : isReg ? '✓ Registered'
-                        : comp.status === 'completed' ? 'Closed'
-                        : 'Register Now'}
+                      {isReg ? '✓ Registered · View' : 'View Details'}
                     </button>
                   </div>
                 </div>
@@ -274,6 +245,5 @@ export default function Discover() {
         </>
       )}
     </div>
-    </>
   );
 }

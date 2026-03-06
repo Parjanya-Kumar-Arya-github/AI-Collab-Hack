@@ -12,6 +12,10 @@ import Profile from './pages/Profile';
 import DashboardLayout from './components/DashboardLayout';
 import Assessment from './pages/Assessment';
 import SmartMatch from './pages/SmartMatch';
+import HostEvent from './pages/HostEvent';
+import CompetitionDetail from './pages/CompetitionDetail';
+import MyEvents from './pages/MyEvents';
+
 
 // ─── Guards ──────────────────────────────────────────────────────────────────
 const ProtectedRoute = ({ children }) => {
@@ -59,6 +63,9 @@ function AppRoutes() {
         <Route path="/my-teams" element={<MyTeams />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/smart-match" element={<SmartMatch />} />
+        <Route path="/competitions/new" element={<HostEvent />} />
+        <Route path="/competitions/:id" element={<CompetitionDetail />} />
+        <Route path="/my-events" element={<MyEvents />} />
       </Route>
 
       {/* Public profile — viewable without login */}
