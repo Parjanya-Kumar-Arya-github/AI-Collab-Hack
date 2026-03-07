@@ -2,9 +2,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
 
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser]     = useState(null);
-  const [token, setToken]   = useState(() => localStorage.getItem('token'));
+  const [user, setUser]       = useState(null);
+  const [token, setToken]     = useState(() => localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
   // On mount, if token exists fetch /me to hydrate user
@@ -15,7 +17,8 @@ export const AuthProvider = ({ children }) => {
 
   const fetchMe = async (tkn) => {
     try {
-      const res = await fetch('http://localhost:5000/api/auth/me', {
+      setLoading(true);
+      const res = await fetch(`${API}/auth/me`, {
         headers: { Authorization: `Bearer ${tkn}` },
       });
       if (!res.ok) throw new Error('Unauthorized');
@@ -32,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   const loginWithToken = (tkn) => {
     localStorage.setItem('token', tkn);
     setToken(tkn);
-    fetchMe(tkn);
+    fetchMe(tkn);  // sets loading=true internally, prevents redirect race
   };
 
   const logout = () => {
