@@ -20,7 +20,7 @@ const Sidebar = () => {
                 <div className="bg-[#7856FF] text-white w-9 h-9 rounded-xl shrink-0 flex items-center justify-center font-bold text-xl leading-none">
                     K
                 </div>
-                <span className="text-2xl font-bold tracking-tight text-[#201F24] leading-none">Kinetic</span>
+                <span className="text-2xl font-bold tracking-tight text-[#201F24] leading-none">MERIDIAN</span>
             </div>
 
             <nav className="flex-1 space-y-[2px]">

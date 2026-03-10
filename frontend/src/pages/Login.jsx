@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Login() {
     const { signInWithGoogle, signInWithGithub, signInWithEmail, signUpWithEmail, user, profile, loading: authLoading } = useAuth();
     const navigate = useNavigate();
-    
+
     const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -40,7 +40,7 @@ export default function Login() {
                 } else {
                     setErrorMsg(errorDesc.replace(/\+/g, ' '));
                 }
-                
+
                 // Clean the URL so the error doesn't persist on refresh
                 window.history.replaceState(null, '', window.location.pathname);
             }
@@ -51,7 +51,7 @@ export default function Login() {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
-        
+
         try {
             if (isSignUp) {
                 if (!username || !email || !password || !fullName) {
@@ -90,7 +90,7 @@ export default function Login() {
                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
                         <Hexagon className="w-6 h-6 text-indigo-700 fill-indigo-700" />
                     </div>
-                    <span className="text-2xl font-bold tracking-tight">Kinetic</span>
+                    <span className="text-2xl font-bold tracking-tight">MERIDIAN</span>
                 </div>
 
                 {/* Middle Content */}
@@ -99,7 +99,7 @@ export default function Login() {
                         Build better products. <br />Faster.
                     </h1>
                     <p className="text-indigo-100 text-lg mb-8 leading-relaxed font-light">
-                        Join thousands of teams who use Kinetic to understand their data, find answers, and make decisions with confidence.
+                        Join thousands of teams who use MERIDIAN to understand their data, find answers, and make decisions with confidence.
                     </p>
 
                     <div className="flex items-center space-x-4">
@@ -116,7 +116,7 @@ export default function Login() {
 
                 {/* Bottom Footer Area */}
                 <div className="relative z-10 flex justify-between text-sm text-indigo-200">
-                    <span>&copy; {new Date().getFullYear()} Kinetic Inc.</span>
+                    <span>&copy; {new Date().getFullYear()} MERIDIAN Inc.</span>
                     <div className="flex space-x-4">
                         <a href="#" className="hover:text-white transition-colors duration-200">Terms</a>
                         <a href="#" className="hover:text-white transition-colors duration-200">Privacy</a>
@@ -132,7 +132,7 @@ export default function Login() {
                         <div className="w-10 h-10 bg-indigo-700 rounded-xl flex items-center justify-center shadow-md">
                             <Hexagon className="w-6 h-6 text-white fill-white" />
                         </div>
-                        <span className="text-2xl font-bold text-gray-900 tracking-tight">Kinetic</span>
+                        <span className="text-2xl font-bold text-gray-900 tracking-tight">MERIDIAN</span>
                     </div>
 
                     <div className="bg-white p-8 sm:p-10 rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100">
@@ -141,7 +141,7 @@ export default function Login() {
                                 {isSignUp ? 'Create an account' : 'Welcome back'}
                             </h2>
                             <p className="text-gray-500 text-sm">
-                                {isSignUp ? 'Start your journey with Kinetic.' : 'Log in to your account to continue'}
+                                {isSignUp ? 'Start your journey with MERIDIAN.' : 'Log in to your account to continue'}
                             </p>
                             {errorMsg && (
                                 <div className="mt-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100">
@@ -152,7 +152,7 @@ export default function Login() {
 
                         {/* SSO Buttons */}
                         <div className="space-y-3 mb-8">
-                            <button 
+                            <button
                                 onClick={signInWithGoogle}
                                 type="button"
                                 className="w-full flex items-center justify-center space-x-3 py-3 px-4 border border-gray-300 rounded-xl text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-sm font-medium">
@@ -164,7 +164,7 @@ export default function Login() {
                                 </svg>
                                 <span>Continue with Google</span>
                             </button>
-                            <button 
+                            <button
                                 onClick={signInWithGithub}
                                 type="button"
                                 className="w-full flex items-center justify-center space-x-3 py-3 px-4 border border-gray-300 rounded-xl text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-sm font-medium">
@@ -279,8 +279,8 @@ export default function Login() {
 
                     <div className="mt-8 text-center text-sm text-gray-600">
                         {isSignUp ? "Already have an account?" : "Don't have an account?"}{' '}
-                        <button 
-                            onClick={() => setIsSignUp(!isSignUp)} 
+                        <button
+                            onClick={() => setIsSignUp(!isSignUp)}
                             className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors"
                         >
                             {isSignUp ? 'Log in here' : 'Sign up today'}
