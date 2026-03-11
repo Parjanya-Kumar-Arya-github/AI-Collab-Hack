@@ -4,6 +4,7 @@ import Discover from './pages/Discover';
 import SmartMatch from './pages/SmartMatch';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
+import Landing from './pages/Landing';
 
 import ProfileBuilder from './pages/ProfileBuilder';
 import { AuthProvider } from './context/AuthContext';
@@ -13,23 +14,22 @@ import './index.css';
 function App() {
   return (
     <AuthProvider>
-    <Routes>
-      <Route path="/login" element={<Login />} />
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
 
-      <Route path="/" element={<DashboardLayout />}>
-        {/* Redirect root to Discover */}
-        <Route index element={<Navigate to="/discover" replace />} />
+        <Route element={<DashboardLayout />}>
+          <Route path="/discover" element={<Discover />} />
+          <Route path="/smart-match" element={<SmartMatch />} />
+          <Route path="/profile" element={<Profile />} />
 
-        <Route path="discover" element={<Discover />} />
-        <Route path="smart-match" element={<SmartMatch />} />
-        <Route path="profile" element={<Profile />} />
+          {/* Fallback routes */}
+          <Route path="/my-teams" element={<div className="p-8 text-indigo-900 font-bold">My Teams (Coming Soon)</div>} />
+          <Route path="/leaderboard" element={<div className="p-8 text-indigo-900 font-bold">Leaderboard (Coming Soon)</div>} />
+        </Route>
 
-        {/* Fallback routes */}
-        <Route path="my-teams" element={<div className="p-8 text-indigo-900 font-bold">My Teams (Coming Soon)</div>} />
-        <Route path="leaderboard" element={<div className="p-8 text-indigo-900 font-bold">Leaderboard (Coming Soon)</div>} />
-      </Route>
-      <Route path="/profile/build" element={<ProfileBuilder />} />
-    </Routes>
+        <Route path="/profile/build" element={<ProfileBuilder />} />
+      </Routes>
     </AuthProvider>
   );
 }
